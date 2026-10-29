@@ -16,7 +16,7 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                sh '''
+                bat '''
                     python -m pip install --upgrade pip
                     pip install -r requirements.txt
                 '''
@@ -25,7 +25,7 @@ pipeline {
 
         stage('Run Automated Tests') {
             steps {
-                sh 'pytest test_app.py'
+                bat 'pytest test_app.py'
             }
         }
 
@@ -42,16 +42,15 @@ pipeline {
 
         stage('Configure Kubernetes Manifest') {
             steps {
-                sh """
-                    SED_EXPR="s|DOCKERHUB_USERNAME/banking-app:TAG_PLACEHOLDER|${DOCKER_HUB_USER}/${IMAGE_NAME}:${BUILD_NUMBER}|g"
-                    sed -i "\$SED_EXPR" k8s/deployment.yaml
+                bat """
+                    powershell -Command "(Get-Content k8s/deployment.yaml) -replace 'DOCKERHUB_USERNAME/banking-app:TAG_PLACEHOLDER', '${DOCKER_HUB_USER}/${IMAGE_NAME}:${BUILD_NUMBER}' | Set-Content k8s/deployment.yaml"
                 """
             }
         }
 
         stage('Deployment to Kubernetes') {
             steps {
-                sh 'kubectl apply -f k8s/deployment.yaml'
+                bat 'kubectl apply -f k8s/deployment.yaml'
             }
         }
     }

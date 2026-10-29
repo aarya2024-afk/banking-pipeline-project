@@ -45,14 +45,6 @@ jobs:
         SED_EXPR="s|DOCKERHUB_USERNAME/banking-app:TAG_PLACEHOLDER|${{ secrets.DOCKER_USERNAME }}/banking-app:$TAG|g"
         sed -i "$SED_EXPR" k8s/deployment.yaml
 
-    - name: Install Network Tunnel Client
+    - name: Validate Kubernetes Manifest Structure
       run: |
-        curl -Ls https://github.com | tar -xz
-        sudo mv bore /usr/local/bin/
-
-    - name: Deploy to Kubernetes Cluster via Local Network
-      run: |
-        echo "${{ secrets.KUBECONFIG }}" > kubeconfig.yaml
-        export KUBECONFIG=kubeconfig.yaml
-        kubectl apply -f k8s/deployment.yaml
-
+        kubectl apply --validate=true --dry-run=client -f k8s/deployment.yaml

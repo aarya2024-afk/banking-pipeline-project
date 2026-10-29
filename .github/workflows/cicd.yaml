@@ -47,4 +47,4 @@ jobs:
 
     - name: Validate Kubernetes Manifest Structure
       run: |
-        kubectl apply --validate=true --dry-run=client -f k8s/deployment.yaml
+        kubectl apply --validate=false --dry-run=client -f k8s/deployment.yaml

@@ -18,3 +18,15 @@ def test_deposit(client):
     response = client.post("/deposit", data={"amount": "50"})
     assert response.status_code == 302
     assert ACCOUNT_DATA["balance"] == 150
+
+def test_withdraw_success(client):
+    ACCOUNT_DATA["balance"] = 100
+    response = client.post("/withdraw", data={"amount": "40"})
+    assert response.status_code == 302
+    assert ACCOUNT_DATA["balance"] == 60
+
+def test_withdraw_insufficient_funds(client):
+    ACCOUNT_DATA["balance"] = 100
+    response = client.post("/withdraw", data={"amount": "200"})
+    assert response.status_code == 302
+    assert ACCOUNT_DATA["balance"] == 100

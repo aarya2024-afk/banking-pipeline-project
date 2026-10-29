@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: banking-app
+  labels:
+    app: banking-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: banking-app
+  template:
+    metadata:
+      labels:
+        app: banking-app
+    spec:
+      containers:
+      - name: banking-container
+        image: DOCKERHUB_USERNAME/banking-app:TAG_PLACEHOLDER
+        ports:
+        - containerPort: 5000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: banking-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: banking-app
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 5000
